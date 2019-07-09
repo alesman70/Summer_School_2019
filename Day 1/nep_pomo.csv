@@ -1,0 +1,12 @@
+Country,area,year,NEP_0.05kg,NEP_0.10kg,total.catch.KG,fishing.days,number.Vessels,average.vessel.HP,CPUE_NEP_Combined,source
+ex_Yugo,pomo_pit,1960,39177,8666,365529,697,10,240,68.64131994,jukic.solo.1975
+ex_Yugo,pomo_pit,1961,23989,8164,302088,694,10,240,46.32997118,jukic.solo.1975
+ex_Yugo,pomo_pit,1962,7310,3207,257460,416,9,240,25.28125,jukic.solo.1975
+ex_Yugo,pomo_pit,1963,7354,3065,322442,636,9,240,16.38207547,jukic.solo.1975
+ex_Yugo,pomo_pit,1964,14704,7867,413656,886,9,240,25.4751693,jukic.solo.1975
+ex_Yugo,pomo_pit,1965,13138,3216,223458,375,8,240,43.61066667,jukic.solo.1975
+ex_Yugo,pomo_pit,1966,29891,3994,201071,499,9,240,67.90581162,jukic.solo.1975
+ex_Yugo,pomo_pit,1967,34534,8369,283823,589,7,240,72.84040747,jukic.solo.1975
+ex_Yugo,pomo_pit,1968,39370,10568,217502,525,7,240,95.12,jukic.solo.1975
+ex_Yugo,pomo_pit,1969,23789,6071,148517,525,7,240,56.87619048,jukic.solo.1975
+ex_Yugo,pomo_pit,1970,8648,3346,98499,264,6,240,45.43181818,jukic.solo.1975
