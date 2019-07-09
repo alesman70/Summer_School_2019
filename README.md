@@ -22,4 +22,7 @@ install.packages(repos="http://flr-project.org/R")
 # INSTALLING Spict # https://github.com/mawp/spict
 
 library(devtools)
-install_github("mawp/spict/spict")  
+
+install_github("mawp/spict/spict") 
+
+
