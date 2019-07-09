@@ -17,7 +17,7 @@ library(spict)
 
 # Load the .csv file, but first set working directory to where your file is
 
-# setwd("~/stock_assessment_summer_school_2018/DAY2")
+setwd("C:/Users/danai/Dropbox/FAO/Module II/DAY 1")
 ane <- read.csv("ANE_06_nonAge.csv")
 
 # look at the file, what do we have there?
@@ -78,6 +78,10 @@ capture.output(summary(ane6fit))[1:4]
 
 # Model converged, seems ok we can proceed with further diagnostics.
 
+# There are various objects that are stored in the fitted object
+
+names(ane6fit)
+
 # Calculate residuals and main diagnostics
 
 ane6fit_diagn <- calc.osa.resid(ane6fit)
@@ -86,7 +90,7 @@ plotspict.diagnostic(ane6fit_diagn)
 
 # Retrospective analysis
 # Diagnostics, run it by taking away the last 3 years, one at a time
-##### D: I changed the retro years to 3, 4 produce a lot of watnings and an error
+
 ane6fit_retro <- retro(ane6fit, nretroyear = 3)
 
 # now plot it!
@@ -98,7 +102,7 @@ plotspict.retro(ane6fit_retro)
 summary(ane6fit)
 
 # x11()
-plot(ane6fit) ##### D: We have to install ellipse package also
+plot(ane6fit) 
 
 # To explore in more details
 par(mfrow=c(3, 2), mar=c(4, 4.5, 3, 3.5))
@@ -170,7 +174,8 @@ plotspict.diagnostic(ane6fitTA_diagn)
 
 # Diagnostics, run it by taking away the last 3 years, one at a time
 ###### D: Again it throws an error if you put 4 years in the retro
-ane6fitTA_retro <- retro(ne6fitTA, nretroyear = 3)
+# ane6fitTA_retro <- retro(ne6fitTA, nretroyear = 3) does not converge
+
 
 plotspict.retro(ane6fitTA_retro)
 
@@ -234,7 +239,7 @@ nep1718$obsC  <- lands17_18$landings #catch observations
 nep1718$timeC <- lands17_18$year # time of catch observations
 
 # TUNING INDEXES
-# Pick surveys index, in this case an trawl survey biomass index (MEDITS)
+# Pick surveys index, in this case a trawl survey biomass index (MEDITS)
 nep1718$obsI <- list()
 nep1718$obsI[[1]] <- froglia$kh_hour_m
 nep1718$obsI[[2]] <- nep_pomo$CPUE_NEP_Combined
@@ -272,11 +277,11 @@ nep1718fit_diagn <- calc.osa.resid(nep1718fit)
 
 plotspict.diagnostic(nep1718fit_diagn)
 
-tic()
+
 # Retrospective analysis
 # Diagnostics, run it by taking away the last 4 years, one at a time
 nep1718fit_retro <- retro(nep1718fit, nretroyear = 4)
-toc()
+
 
 # now plot it!
 plotspict.retro(nep1718fit_retro)
@@ -347,7 +352,7 @@ ane6effort$timeE <- ane$year[59:71]
 
 ########################################################################################
 
-# Next exercise
+# EXERCIsE 3
 
 
 # Robust estimation for effort (or catch), helps reduce influence of idividual data points on model fit or CIs.
@@ -358,242 +363,12 @@ ane6effort$timeE <- ane$year[59:71]
 ane6effort$robflage <- 1 # here we turn on robust estimation on effort
 # Rerun the assessment, does the fit improve?
 
-ane6effortfitRE <- fit.spict(ane6effort)
-
-capture.output(summary(ane6effortfitRE))[1:4]
-
-plot(ane6effortfitRE)
-
-ane6effortt_diagnRE <- calc.osa.resid(ane6effortfitRE)
-
-plotspict.diagnostic(ane6effortt_diagnRE)
 
 
-##### D: No object ane6effortfit
-##### AO: I think it probably comes from the exercise... but we don't have the exercise solutions
-# plotspict.diagnostic(ane6effortfit)
-plotspict.diagnostic(ane6effortfitRE)
+
 
 # 2) remove the value of fishing effort in 2007 and rerun the assessment, is it better?
 
 
 
 
-############################################################################################################################
-
-#######################################################################################
-# CASE STUDY COMPARISON with a age based model
-library(FLCore)
-
-# Data are stored in FLCore, can just load with command data()
-
-data(ple4.index)
-data(ple4)
-
-# Take an ICES Stock, like Plaice, this is normally assessed at age with an XSA or other model, the example contains the estimates in the FLStock.
-
-#We want to compare the fit of Plaice with a SPICT production model and that of the original stock assessment
-
-#The FLStock of plaice and the FLIndex, are both at age, and the index has only the abundance (Catch.n)
-
-# First step is to take what is needed from the FLStock and collapse along the age dimensions.
-
-as.vector(catch(ple4))
-
-#Create an emplty list for Spict Object
-
-ple <- vector("list")
-
-# Import Catch data (Landings plus Discards)
-
-ple$obsC  <- as.vector(catch(ple4))  #catch observations
-
-##### D: It appears that the ple stock has some more years now (up to 2017)
-ple$timeC <- seq(1957, 2017)   # time of catch observations
-
-
-# For the index we need to build an index by biomass, we only have abundance, so as an acceptable hack we take the stock.wt * catch.n of the index to derive the total abundance by age. This is then summed by year
-
-## weight at age index
-Iwa <- catch.n(ple4.index) * trim(stock.wt(ple4),
-        year = dimnames(ple4.index@catch.n)$year,
-        age = dimnames(ple4.index@catch.n)$age)
-
-## sum the index
-as.vector(quantSums(Iwa))
-
-##### D: The same for the index
-ple$timeI <- seq(1996,2017)
-
-ple$obsI <- as.vector(quantSums(Iwa))
-
-# there is a very low point in the IWA
-# ple$obsI[[13]] <- NA
-
-ple
-
-# Lets have a look
-# x11()
-plotspict.data(ple)
-
-
-#Plot inital guesses on the model initial values
-
-plotspict.ci(ple)
-
-plefit <- fit.spict(ple)
-
-
-# Explore convergence
-capture.output(summary(plefit))[1:4]
-
-plot(plefit)
-
-ane6effortt_diagn <- calc.osa.resid(plefit)
-
-plotspict.diagnostic(ane6effortt_diagn)
-
-# Diagnostics, run it by taking away the last 4 years, one at a time
-ane6fit_retroEFF <- retro(plefit, nretroyear = 4)
-
-# now plot it!
-plotspict.retro(ane6fit_retroEFF)
-
-
-# How does the SPICT assessment compare to the age based stock assessment for Plaice?
-
-# let's have a look
-#--------------------------------------------------------------------------------------------------------------------
-# HOW TO RUN A CATCH FORECAST IN SPICT
-
-ane6 <- vector("list")
-
-# Import Catch data (Landings plus Discards)
-ane6$obsC  <- ane$catch  #catch observations
-ane6$timeC <- ane$year   # time of catch observations
-ane6$obsC <- c(ane6$obsC, 17830.4) # adding an extra value to update the stock
-ane6$timeC <- c(ane6$timeC, 2016)  # adding an extra value to update the year
-
-# TUNING INDEXES
-ane6$timeI <- ane$year[59:71] # Index 1
-ane6$obsI <- ane$index[59:71]
-ane6$obsI <- c(ane6$obsI, 67910.3)
-ane6$timeI <- c(ane6$timeI, 2016)
-
-
-# Short term forecast
-#To make a catch forecast a forecast interval needs to be specified. This is done by specifying the start of the interval (inp$timepredc) and the length of the interval in years (inp$dtpredc). 
-
-#For example, if a forecast of the annual catch of 2018 is of interest, then inp$timepredc = 2018 and inp$dtpredc = 1. 
-
-#In addition to the forecast interval a fishing scenario needs to be specified. This is done by specifying a factor (inp$ffac) to multiply the current fishing mortality by (i.e. the F at the last time point of the time period where data are available) and the time that management should start (inp$manstart). 
-
-#The time point of the reported forecast of biomass and fishing mortality can be controlled by setting inp$timepredi. Producing short-term forecasts entails minimal additional computing time.
-
-ane6$manstart <- 2016  # When management will start
-ane6$timepredc <- 2020 # Time when we want predicted catch
-ane6$dtpredc <- 1 # Time interval in years for prediction
-ane6$timepredi <- 2020
-ane6$ffac <- 0.75 # Specify the fishing scenario for the forecast, in this case use a factor to  
-
-
-anespict <- fit.spict(ane6)
-summary(anespict)
-plot(anespict)
-
-sumspict.predictions(anespict)
-
-par(mfrow=c(2, 2), mar=c(4, 4.5, 3, 3.5))
-plotspict.bbmsy(anespict)
-plotspict.ffmsy(anespict, qlegend=FALSE)
-plotspict.catch(anespict, qlegend=FALSE)
-plotspict.fb(anespict, man.legend=FALSE)
-
-
-# BUILD MANAGEMENT SCENARIOS
-# The package has a function that runs several predefined management scenarios, which can be presented in a forecast table.
-
-res <- manage(anespict)
-df <- mansummary(res)
-
-df
-
-par(mfrow=c(2, 2), mar=c(4, 4.5, 3, 3.5))
-plotspict.bbmsy(res)
-plotspict.ffmsy(res, qlegend=FALSE)
-plotspict.catch(res, qlegend=FALSE)
-plotspict.fb(res, man.legend=FALSE)
-
-# table of forecast for  +1 year
-mansummary(res, ypred=1, include.unc = FALSE)
-
-# table of forecast for  +4 year, in our case the period 2019-2020
-mansummary(res, ypred=4, include.unc = FALSE)
-
-
-
-##################################################################################
-ane6 <- vector("list")
-
-# Import Catch data (Landings plus Discards)
-ane6$obsC  <- ane$catch  #catch observations
-ane6$timeC <- ane$year   # time of catch observations
-ane6$obsC <- c(ane6$obsC, 17830.4) # adding an extra value to update the stock
-ane6$timeC <- c(ane6$timeC, 2016)  # adding an extra value to update the year
-
-# TUNING INDEXES
-ane6$timeI <- ane$year[59:71] # Index 1
-ane6$obsI <- ane$index[59:71]
-ane6$obsI <- c(ane6$obsI, 67910.3)
-ane6$timeI <- c(ane6$timeI, 2016)
-
-
-
-ane6$manstart <- 2016  # When management will start
-ane6$timepredc <- 2020 # Time when we want predicted catch
-ane6$dtpredc <- 1 # Time interval in years for prediction
-ane6$timepredi <- 2020
-#ane6$ffac <- 0.75 # Specify the fishing scenario for the forecast, in this case use a factor to  multiply F F 0.25
-
-
-anespict2 <- fit.spict(ane6)
-summary(anespict2)
-plot(anespict2)
-
-sumspict.predictions(anespict2)
-
-par(mfrow=c(2, 2), mar=c(4, 4.5, 3, 3.5))
-plotspict.bbmsy(anespict2)
-plotspict.ffmsy(anespict2, qlegend=FALSE)
-plotspict.catch(anespict2, qlegend=FALSE)
-plotspict.fb(anespict2, man.legend=FALSE)
-
-
-# BUILD MANAGEMENT SCENARIOS
-res2 <- manage(anespict2)
-df2 <- mansummary(res2)
-
-df2
-
-par(mfrow=c(2, 2), mar=c(4, 4.5, 3, 3.5))
-plotspict.bbmsy(res2)
-plotspict.ffmsy(res2, qlegend=FALSE)
-plotspict.catch(res2, qlegend=FALSE)
-plotspict.fb(res2, man.legend=FALSE)
-
-# table of forecast for  +1 year
-mansummary(res2, ypred=1, include.unc = FALSE)
-
-# table of forecast for  +4 year, in our case the period 2019-2020
-mansummary(res2, ypred=4, include.unc = FALSE)
-
-
-
-
-# #################################################################################
-
-# MPB
-
-# Collapse function for age based assessment
-#
-# exercize, collapse ple 4 and compare with estimates already in 
