@@ -1,7 +1,11 @@
 # Summer_School_2019
 
 # INSTALLING R and RStudio 64bit version ##
-Please Install R and R Studio on your laptop. You can find Windows installer in folder Software (R3.6 and RStudio 1.2.1335).
+Please Install R and R Studio on your laptop. (R3.6 and RStudio 1.2.1335 should be fine).
+
+https://www.rstudio.com/products/rstudio/download/
+
+https://cran.r-project.org/bin/windows/base/old/3.6.0/
 
 # INSTALLING FLR packages #
 Please install packages and dependencies to run FLR stuff (folder Packages)
