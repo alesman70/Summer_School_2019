@@ -11,13 +11,13 @@ library(spict)
 # Let's work with a good time series for anchovy in GSA Ane6.
 # What is available: 
   # catch since 1945
-  # biomass index since 2002
-  # effort index for Purse seine in kw*Days and fishing days
+  # biomass index since 2003
+  # effort index for Purse seine in kw*Days(nominal effort) and fishing days
 
 
 # Load the .csv file, but first set working directory to where your file is
 
-setwd("C:/Users/danai/Dropbox/FAO/Module II/DAY 1")
+# setwd("C:/Users/danai/Dropbox/FAO/Module II/DAY 1")
 ane <- read.csv("ANE_06_nonAge.csv")
 
 # look at the file, what do we have there?
@@ -118,7 +118,7 @@ plotspict.tc(ane6fit)
 
 # 1 Trim catch time series to start the year when the index starts, fit the best model you can
 #  - does it converge?
-#  - if yes, does it change the paramters and the perception of the stocks ?
+#  - if yes, does it change the parameters and the perception of the stocks ?
 
 ############################################################################################################################
 
@@ -149,7 +149,7 @@ ane6$timeI <- c(ane6$timeI, 2016)
 ane6$timeI[1:5] <- ane6$timeI[1:5] + 0.95
 ane6$timeI[6:14] <- ane6$timeI[6:14] + 0.54
 
-ane6$eulertype <- "soft"
+ane6$eulertype <- "soft" #This feature is particularly useful if observations (most likely index series) are observed at odd times during the year
 
 # how does it look? 
 
@@ -172,12 +172,11 @@ ane6fitTA_diagn <- calc.osa.resid(ne6fitTA)
 plotspict.diagnostic(ane6fitTA_diagn)
 
 
-# Diagnostics, run it by taking away the last 3 years, one at a time
-###### D: Again it throws an error if you put 4 years in the retro
-# ane6fitTA_retro <- retro(ne6fitTA, nretroyear = 3) does not converge
 
-
-plotspict.retro(ane6fitTA_retro)
+# # ane6fitTA_retro <- retro(ne6fitTA, nretroyear = 3) does not converge
+# 
+# 
+# plotspict.retro(ane6fitTA_retro)
 
 
 # Fit Summary
