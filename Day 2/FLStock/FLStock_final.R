@@ -15,17 +15,21 @@ class(hke)
 
 slotNames(hke)
 
+
+
 # look at the structure
 str(hke)
 
 # Look  at the name of the stock, why is it different after we changed the object name? 
 # name(hke) != object name
 # If you prefer change it #
-# name(hke)[]="hke"
+name(hke)[]="hke"
+str(hke)
 
 # Description
 desc(hke)
 
+#hke@range
 
 # Range of ages, years, plus group and fbar
 range(hke)
@@ -69,7 +73,7 @@ catch.wt(hke)
 # this is the product of number of fish @ age times the mean weight of fish @ age
 quantSums(catch.n(hke)[,"2006",,,,] * catch.wt(hke)[,"2006",,,,])
 
-
+?quants
 # is it in line with what is reported with the hke stock?
 catch(hke)[,"2006",,,,]
 
@@ -81,8 +85,7 @@ mean(m(hke))
 quantMeans(m(hke))
 quantMeans(m(hke)[c("0","1"),,,,,,])
 (1.16598+0.573)/2
-# quantMeans(m(hke)[c(0,1),,,,,,]) wrong!!!
-
+quantMeans(m(hke)[c(0,1),,,,,,]) wrong!!!
 exp(-m(hke)["0",,,,,,])
 exp(-1.16598)
 
