@@ -7,7 +7,7 @@ participants <- c('dhaker.troudiest@laposte.net', 'akram_turky@yahoo.com',
                   'ekamberi@ubt.edu.al', 'kamel_benounnas@yahoo.fr',
                   'hanem.djabou@laposte.net', 'aymen.haj.82@gmail.com', 'mer_zaque@yahoo.fr',
                   'helenaglamuzina1@gmail.com', 'miriam.gambin@gov.mt', 'derbali10@gmail.com',
-                  'federico.cali@irbim.cnr.it', 'gabriele.boscolopalo@gmail.com',
+                  'federico.cali@irbim.cnr.it', 'gabriele.boscolopalo@gmail.com','giacomosardo88@gamil.com',
                   'savasyay@gmail.com')
 
 n <- length(participants)
@@ -33,4 +33,4 @@ drumroll <- function(nroll = 15){
     ##system(paste0("xcowsay -t 15 ", df2$participant, " will answer!!"))
 }
 
-drumroll(nroll = 5)
+drumroll(nroll = 20)

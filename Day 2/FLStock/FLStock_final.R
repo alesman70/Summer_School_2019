@@ -9,10 +9,10 @@ load("../Data/HKE_09_10_11_EWG15_11.RData")
 # Rename the Stock object to something more handy and faster to write
 hke <- HKE_09_10_11_EWG15_11
 
-hke
+print(hke)
 
 class(hke)
-
+harvest(hke)
 slotNames(hke)
 
 
@@ -42,7 +42,7 @@ range(hke)[c("minfbar","maxfbar")] <- c(1,5)
 range(hke)
 range(hke)[c("minfbar","maxfbar")] <- c(1,4)
 
-hke <- setPlusGroup(hke,5)
+catch.n(hke) <- setPlusGroup(hke,5)
 hke <- setPlusGroup(hke,6)
 
 
@@ -72,7 +72,7 @@ catch.wt(hke)
 # Compute catch in weight for 2006 only,
 # this is the product of number of fish @ age times the mean weight of fish @ age
 quantSums(catch.n(hke)[,"2006",,,,] * catch.wt(hke)[,"2006",,,,])
-
+catch(hke)
 ?quants
 # is it in line with what is reported with the hke stock?
 catch(hke)[,"2006",,,,]
@@ -135,13 +135,13 @@ xyplot(data~year,data=rec(hke),type=c("l","p"))
 # quantSums(stock.n(hke)*stock.wt(hke)*mat(hke))
 ssb(hke)
 xyplot(data~year,data=ssb(hke),type=c("l","p"))
-
+mat(hke)
 # METHODS Fbar = mean(F between fbar ages)
 fbar(hke)
 
 # METHODS fapex = max F per year
 fapex(hke)
-
+harvest(hke)
 #METHODS Z = total mortality (F+M)
 z(hke)
 units(m(hke))[]="m"

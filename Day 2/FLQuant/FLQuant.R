@@ -33,7 +33,7 @@ units(flq)
 
 # and an specific name for the first dimension
 quant(flq)
-quant(flq) <- "length"
+quant(flq) <- "pippo"
 quant(flq) <- "age"
 quant(flq)
 
@@ -124,6 +124,8 @@ flq[, 2:4]
 flq[-1,]
 
 # Note that not all indices must be provided (unlike array)
+# arr <- array(rlnorm(20),dim=c(2,5,2))
+# arr[1,1,1]
 flq[1,,,,,]
 flq[1,1,,,,]
 flq[1,1,1,1,1,1]
@@ -132,7 +134,11 @@ flq[1,,,,,]
 # vs.
 flq[1,]
 
-flq[1,,,,,]
+# FLQuant(rnorm(20), dim=c(2,5,1,1,2,1),
+#         dimnames=list(age=1:2,year=2000:2004, area=2))
+
+
+flq[1,2,,,,]
 #vs
 flq[1,1,1,1,1,1]
 
@@ -166,7 +172,6 @@ set.seed(123)
 (naa <- FLQuant(apply(matrix(rlnorm(10, log(0.5), 0.2), ncol=10), 2,
 	function(x) exp( -1 * cumsum(rep(x, 6)))),
 	dimnames=list(age=1:6, year=2000:2009), units="1000"))
-
 # gives us the total biomass-at-age
 (bma <- naa * waa)
 
@@ -185,6 +190,7 @@ naa * 1000
 naa * c(1, 100)
 naa * exp(c(1:6))
 
+#naa[1,1]*exp(c(1:6))[1]
 0.639557*2.718282
 0.409033*7.389056
 
@@ -203,14 +209,14 @@ naa * exp(c(1:7))
 apply(bma, 2:6, sum)
 
 # or get the mean abundance at age for the last 3 years
-apply(bma[,as.character(2007:2009)], c(1,3:6), mean)
-
-
+#apply(bma[,as.character(2007:2009)], c(1,3:6), mean)
+apply(bma[,as.character(2007:2009)], 1, mean)
+apply(bma[,as.character(2007:2009)], 2, mean)
 # ITERS
 # Adding iters in dim, dimnames, or iter
 (flq <- FLQuant(rlnorm(100), dim=c(10,1,1,1,1,10), quant='age'))
 
-flq[iter=2]
+flq[iter=1]
 as.data.frame(flq)
 
 (flq <- FLQuant(rlnorm(100), dimnames=list(age=1:10, iter=1:10)))
@@ -231,7 +237,8 @@ bmidf[bmidf$age==1 & bmidf$year==2000,]
 # iter, iter<-
 # to access or modify a subset of iters, as in [,,,,,*]
 iter(flq, 1)
-
+iter(flq, 2)
+(3.4+0.34)/2
 iter(flq, 1:2)
 
 # iterMeans, iterVars
