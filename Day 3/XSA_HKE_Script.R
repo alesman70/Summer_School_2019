@@ -81,6 +81,8 @@ ggplot(catches, aes(year,data,color=factor(age))) + geom_line(size=1.1) + ggtitl
 # To plot cohorts in time
 ggplot(catches, aes(year,data,color=factor(cohort))) + geom_line(size=1.1) + ggtitle("Cohorts HKE GSA9-11") + xlab("Year") + ylab("N (thousands)") + scale_colour_discrete(name  = "Cohort")
 
+ggplot(catches, aes(age,data,color=factor(cohort))) + geom_line(size=1.1) + ggtitle("Cohorts HKE GSA9-11") + xlab("Age") + ylab("N (thousands)") + scale_colour_discrete(name  = "Cohort")
+
 ggplot(catches, aes(age,data)) + geom_line(size=1.1) + ggtitle("Cohorts HKE GSA9-11") + xlab("Age") + ylab("N (thousands)") + facet_wrap(~cohort)
 
 
