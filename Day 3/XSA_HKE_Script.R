@@ -605,4 +605,3 @@ save(HKE.idx, file="HKE9_10_11xsa_idx.Rdata")
 # 1. Load the FLStock called DPS09stk and the FLIndex called DPS09idx. TIP: use the function load()
 
 # 2. Run a sensitivity analysis on rage and qage using values ranging between -1 and 1 for rage and between 2 and 3 for qage. On shk.age ranging between 1 to 3. On fse ranging between 0.5 and 3 with steps of 0.5. Remember to check residuals and retrospective to decide the best possible model.
-
