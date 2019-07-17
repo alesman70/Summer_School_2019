@@ -55,6 +55,7 @@ mat(HKE)#maturity by age
 units(mat(HKE)) <- ""
 
 m(HKE)#natural mortality by age
+units(m(HKE)) <- "m"
 
 harvest(HKE)#fishing mortality by age  - Not filled in yet
 units(harvest(HKE)) <- "f"
@@ -70,12 +71,17 @@ range(HKE)[c("minfbar","maxfbar")]
 
 plot(catch(HKE)) + xlab("Year") + ylab("Catch (t)")
 
-catches<-as.data.frame(catch.n(HKE))
+catches<-as.data.frame(catch.n(HKE), cohort=TRUE)
 
 ggplot(catches, aes(age,data,color=factor(year))) + geom_line(size=1.1) + ggtitle("Age structure catches") + xlab("Age") + ylab("N (thousands)") + scale_colour_discrete(name  ="Year")
 
 
 ggplot(catches, aes(year,data,color=factor(age))) + geom_line(size=1.1) + ggtitle("Catches HKE GSA9-11") + xlab("Year") + ylab("N (thousands)") + scale_colour_discrete(name  = "Age")
+
+# To plot cohorts in time
+ggplot(catches, aes(year,data,color=factor(cohort))) + geom_line(size=1.1) + ggtitle("Cohorts HKE GSA9-11") + xlab("Year") + ylab("N (thousands)") + scale_colour_discrete(name  = "Cohort")
+
+ggplot(catches, aes(age,data)) + geom_line(size=1.1) + ggtitle("Cohorts HKE GSA9-11") + xlab("Age") + ylab("N (thousands)") + facet_wrap(~cohort)
 
 
 # Set fbar in the stock 
@@ -584,7 +590,7 @@ save(HKE.idx, file="HKE9_10_11xsa_idx.Rdata")
 
 # Exercise 03
 
-# 1. Run XSA with different Fbar settings (i.e. 0-2, instead of 0-3) and compare results with the original assessment
+# 1. Change the Fbar settings (i.e. 0-2, instead of 0-3) and compare results with the original assessment
 
 
 # Exercise 04
