@@ -31,8 +31,8 @@ summary(hkebrp)
 catch.sel(hkebrp) 
 discards.sel(hkebrp)  
 
-ggplot(catch.sel(hkebrp), aes( age, data))+geom_line()
-# ggplot(discards.sel(hkebrp), aes( age, data))+geom_line() 
+ggplot(as.data.frame(catch.sel(hkebrp)), aes( age, data))+geom_line()
+# ggplot(as.data.frame(discards.sel(hkebrp)), aes( age, data))+geom_line() 
 
 
 # mass-at-age 
@@ -109,13 +109,13 @@ params(hkebrp)
 # To do that we first need to specify which SR model we want to use
 model <- "geomean"
 
-# Then we need to create an FLSR object and use it in the function mle
+# Then we need to create an FLSR object and use it in the function fmle
 srr <- fmle(as.FLSR(hke, model = model))
 
 ## We can have a look at how is the fit of our SR model by plotting
 plot(srr)
 
-# Now we calcluate the reference points with brp and we also provide the SR
+# Now we calculate the reference points with brp and we also provide the SR
 hkebrpgm <- brp(FLBRP(hke, sr = srr))
 ref_points <- refpts(hkebrpgm)
 ref_points
