@@ -4,14 +4,8 @@
 #####################################################################
 
 
-# fit types = "MP" (Management Procedures) or "assessment"
-
-# fit method = "sca"  
-
-?sca
-
 #====================================================================
-# Load
+# Load our data
 #====================================================================
 # install.packages("rgl")
 # install.packages("diagram")
@@ -31,8 +25,15 @@ load("HKE_09_10_11_idx.Rdata")
 hke <- HKE_09_10_11_EWG15_11
 hke.idx <- flq.idx 
 plot(hke)
+
 # Adjust Fbar range
-xyplot(data~age,groups=year,data=hke@catch.n,type=c("l","p"))
+
+df<-as.data.frame(catch.n(hke))
+df<-na.omit(df)
+ggplot(df,aes(x = age, y = data,color= as.factor(year)))+ 
+  geom_line(size = 1)+ggtitle("Catch at age HKE GSA 9, 10 & 11")
+
+
 range(hke)["minfbar"]
 range(hke)["maxfbar"]
 
@@ -75,14 +76,13 @@ wireframe(data ~ age + year, data = as.data.frame(catch.n(stkqd)), drape = TRUE,
 # F 3D
 wireframe(data ~ age + year, data = as.data.frame(harvest(stkqd)), drape = TRUE, main="Harvest", screen = list(x = -60, y= - 45))
 
-xyplot(data~age,groups=year,type=c("l","p"),data=stkqd@harvest)
-# xyplot(data~age,groups=year,type=c("l","p"),data=stkqd@catch.n[,age=c(5:7)])
+xyplot(data~age,groups=year,type=c("l","p"),data=stkqd@harvest, ylab = 'harvest')
+
 
 # Explore how well the model is predicitng the catches
 plot(fit, hke)
 
 # Explore how well the model is predicitng survey abundances
-plot(fit, hke.idx)
 
 # Individual indexes can be called with
 plot(fit, hke.idx[1])
@@ -95,7 +95,7 @@ plot(fit, hke.idx[4])
 #Get the fit parameters
 fitSumm(fit)
 
-AIC(fit) # Akike Information Criterion, the smaller the better, but be careful that the model is fitting something sensible!
+AIC(fit) # Akaike Information Criterion, the smaller the better, but be careful that the model is fitting something sensible!
 BIC(fit) # Bayesian Information Criterion
 
 #====================================================================
@@ -135,8 +135,19 @@ qqmath(res0)
 # update stock object with assessment results
 stk0 <- hke + fit0
 
-wireframe(data~year+age, data=harvest(stk0))
+wireframe(data~year+age, data=harvest(stk0), drape = TRUE, main="Fishing mortality", screen = list(x = -90, y=-45))
+
 plot(stk0) + ggtitle("Stock summary")
+
+# Explore how well the model is predicitng the catches
+plot(fit0, hke)
+
+
+# Individual indexes can be called with
+plot(fit0, hke.idx[1])
+plot(fit0, hke.idx[2])
+plot(fit0, hke.idx[3])
+plot(fit0, hke.idx[4])
 
 
 AIC(fit0)
@@ -299,12 +310,13 @@ plot(res5)
 bubbles(res5)
 qqmath(res5)
 
-z <- as.matrix(harvest(stk5)[,,drop = TRUE])
-x <- as.numeric(rownames(z))
-y <- as.numeric(colnames(z))
+sfrac <- mean(range(hke.idx[[1]])[c("startf", "endf")])
+Z <- (m(hke) + harvest(fit5))*sfrac # check M * sfrac
+lst <- dimnames(fit5@index[[1]])
+lst$x <- stock.n(fit5)*exp(-Z)
+stkn <- do.call("trim", lst)
 
-plot3d(surface3d(z = z,  y = y , x= x, type = "n"))
-surface3d(z = z,  y= y , x= x, col = jet.colors(100))
+wireframe(data ~ age + year, data = as.data.frame(index(fit5)[[1]]/stkn), drape = TRUE, main="Catchability", screen = list(x = -90, y=-45))
 
 
 plot(fit5, hke)
@@ -327,12 +339,13 @@ plot(res6)
 bubbles(res6)
 qqmath(res6)
 
-z <- as.matrix(harvest(stk6)[,,drop = TRUE])
-x <- as.numeric(rownames(z))
-y <- as.numeric(colnames(z))
+sfrac <- mean(range(hke.idx[[1]])[c("startf", "endf")])
+Z <- (m(hke) + harvest(fit6))*sfrac # check M * sfrac
+lst <- dimnames(fit6@index[[1]])
+lst$x <- stock.n(fit6)*exp(-Z)
+stkn <- do.call("trim", lst)
 
-plot3d(surface3d(z = z,  y = y , x= x, type = "n"))
-surface3d(z = z,  y= y , x= x, col = jet.colors(100))
+wireframe(data ~ age + year, data = as.data.frame(index(fit6)[[1]]/stkn), drape = TRUE, main="Catchability", screen = list(x = -90, y=-45))
 
 
 plot(fit6, hke)
@@ -355,12 +368,14 @@ plot(res7)
 bubbles(res7)
 qqmath(res7)
 
-z <- as.matrix(harvest(stk7)[,,drop = TRUE])
-x <- as.numeric(rownames(z))
-y <- as.numeric(colnames(z))
+sfrac <- mean(range(hke.idx[[1]])[c("startf", "endf")])
+Z <- (m(hke) + harvest(fit7))*sfrac # check M * sfrac
+lst <- dimnames(fit7@index[[1]])
+lst$x <- stock.n(fit7)*exp(-Z)
+stkn <- do.call("trim", lst)
 
-plot3d(surface3d(z = z,  y = y , x= x, type = "n"))
-surface3d(z = z,  y= y , x= x, col = jet.colors(100))
+wireframe(data ~ age + year, data = as.data.frame(index(fit7)[[1]]/stkn), drape = TRUE, main="Catchability", screen = list(x = -90, y=-45))
+
 
 plot(fit7, hke)
 plot(fit7, hke.idx)
@@ -383,12 +398,13 @@ plot(res8)
 bubbles(res8)
 qqmath(res8)
 
-z <- as.matrix(harvest(stk8)[,,drop = TRUE])
-x <- as.numeric(rownames(z))
-y <- as.numeric(colnames(z))
+sfrac <- mean(range(hke.idx[[1]])[c("startf", "endf")])
+Z <- (m(hke) + harvest(fit8))*sfrac # check M * sfrac
+lst <- dimnames(fit8@index[[1]])
+lst$x <- stock.n(fit8)*exp(-Z)
+stkn <- do.call("trim", lst)
 
-plot3d(surface3d(z = z,  y = y , x= x, type = "n"))
-surface3d(z = z,  y= y , x= x, col = jet.colors(100))
+wireframe(data ~ age + year, data = as.data.frame(index(fit8)[[1]]/stkn), drape = TRUE, main="Catchability", screen = list(x = -90, y=-45))
 
 plot(fit8, hke)
 plot(fit8, hke.idx)
@@ -418,7 +434,9 @@ hke.idxplus <- hke.idx[c(1,3:4)]
 hke.idxplus[[1]] <- FLIndex(index=setPlusGroup(index(hke.idxplus[[1]]), 4))
 hke.idxplus[[2]] <- FLIndex(index=setPlusGroup(index(hke.idxplus[[2]]), 4))
 hke.idxplus[[3]] <- FLIndex(index=setPlusGroup(index(hke.idxplus[[3]]), 4))
+
 names(hke.idxplus)
+
 range(hke.idxplus[[1]], c('startf', 'endf')) <- c( 0.5, 0.75)
 range(hke.idxplus[[2]], c('startf', 'endf')) <- c( 0.5, 0.75)
 range(hke.idxplus[[3]], c('startf', 'endf')) <- c( 0.5, 0.75)
@@ -432,7 +450,11 @@ plot(res9)
 bubbles(res9)
 qqmath(res9)
 plot(fitplus4, hkeplus)
-plot(fitplus4, hke.idxplus)
+
+plot(fitplus4, hke.idxplus[1])
+plot(fitplus4, hke.idxplus[2])
+plot(fitplus4, hke.idxplus[3])
+
 hkeplus <- hkeplus + fitplus4
 plot(FLStocks(XSA=hke,PlusG4=hkeplus))
 
@@ -512,7 +534,6 @@ plot(FLQuants(fac=stock.n(fit11)[1], bh=stock.n(fit14)[1]))
 
 #====================================================================
 # Predict and simulate
-# To simulate we need a fit="assessment" so that the hessian/vcov is computed
 #====================================================================
 
 # To predict and simulate R uses the methods predict() and simulate(), which were implemented in FLa4a in the same fashion.
@@ -523,12 +544,14 @@ qmodel <- list( ~ s(age, k=3) + year, ~ s(age, k=3) + year, ~ s(age, k=3) + year
 fit.sim <- sca(hke, hke.idx, fmodel, qmodel) 
 
 fit.pred <- predict(fit.sim)
-# lapply(fit.pred, names)
+
+
 #--------------------------------------------------------------------
 # Simulate
 #--------------------------------------------------------------------
 ?simulate
 # Simulate uses the variance-covariance matrix computed from the Hessian returned by ADMB and the fitted parameters, to parametrize a multivariate normal distribution
+
 fits <- simulate(fit.sim, 100)
 flqs <- FLQuants(sim=iterMedians(stock.n(fits)), det=stock.n(fit.sim))
 
@@ -553,84 +576,3 @@ wireframe(data ~ age + year, data = as.data.frame(harvest(fit)), drape = TRUE, s
 
 
 
-# #--------------------------------------------------------------------
-# # Working with covariates
-# #--------------------------------------------------------------------
-library(FLCore)
-data(ple4)
-data(ple4.indices)
-fit <- sca(ple4, ple4.indices)
-
-# In linear model one can use covariates to explain part of the variance observed on the data that the ’core’ model does not explain. The same can be done in the a4a framework. The example below uses the North Atlantic Oscillation (NAO) index to model recruitment
-
-nao <- read.table("https://www.esrl.noaa.gov/psd/data/correlation/nao.data",
-                  skip = 1, nrow = 62, na.strings = "-99.90")
-dnms <- list(quant = "nao", year = 1948:2017, unit = "unique", season = 1:12,
-             area = "unique")
-nao <- FLQuant(unlist(nao[, -1]), dimnames = dnms, units = "nao")
-nao <- seasonMeans(trim(nao, year = dimnames(stock.n(ple4))$year))
-nao <- as.numeric(nao)
-srmod <- ~ nao
-fit2 <- sca(ple4, ple4.indices[1], qmodel = list(~s(age, k = 4)), srmodel = srmod)
-flqs <- FLQuants(simple = stock.n(fit)[1], covar = stock.n(fit2)[1])
-xyplot(data~year, groups=qname, data=flqs, type="l", main="Recruitment model with covariates", auto.key=T)
-
-# In a second model we’re using the NAO index not to model recruitment directly but to model one of the parameters of the S/R function
-
-srmod <- ~ricker(a = ~nao, CV = 0.1)
-fit3 <- sca(ple4, ple4.indices[1], qmodel = list(~s(age, k = 4)), srmodel = srmod)
-flqs <- FLQuants(simple = stock.n(fit)[1], covar = stock.n(fit3)[1])
-xyplot(data~year, groups=qname, data=flqs, type="l", main="Recruitment model with covariates", auto.key=T)
-
-#--------------------------------------------------------------------
-# External weigthing of likelihood components
-#--------------------------------------------------------------------
-
-# data(hke)
-# data(hke.idx)
-# 
-# stk <- hke
-# idx <- hke.idx[1]
-# # variance of observed catches
-# varslt <- catch.n(stk)
-# varslt[] <- 1
-# catch.n(stk) <- FLQuantDistr(catch.n(stk), varslt) # show: remove var
-# # variance of observed indices
-# varslt <- index(idx[[1]])
-# varslt[] <- 0.05
-# index.var(idx[[1]]) <- varslt
-# 
-# # run
-# fit <- a4aSCA(hke, hke.idx[1], vmodel=list(~1, ~1))
-# fit1 <- a4aSCA(stk, idx, vmodel=list(~1, ~1)) 
-# 
-# flqs <- FLQuants(nowgt=stock.n(fit), extwgt=stock.n(fit1))
-# 
-# xyplot(data~year|age, groups=qname, data=flqs, type="l", main="Likelihood weighting", scales=list(y=list(relation="free")), auto.key=keylst)
-# 
-# #--------------------------------------------------------------------
-# # Assessing ADMB files
-# #--------------------------------------------------------------------
-# 
-# fit1 <- a4aSCA(stk, idx, fmodel, qmodel, srmodel, n1model, vmodel=list(~1, ~1), wkdir="mytest") 
-# 
-
-#--------------------------------------------------------------------
-# WKSAM exercise
-#--------------------------------------------------------------------
-# fits <- simulate(fit, 25)
-# stk <- hke + fits
-# 
-# fits2 <- a4aSCA(stk, hke.idx[1], fmodel, qmodel, srmodel, fit="MP")  
-# flqs <- FLQuants(fit=stock.n(fit), repl=stock.n(fits2))
-# xyplot(data~year|age, groups=qname, data=flqs, type="l", scales=list(y=list(relation="free")), auto.key=keylst)
-# 
-#--------------------------------------------------------------------
-# Exercise 06
-#--------------------------------------------------------------------
-
-# Assess your stock or hke (don't forget to simulate)
-
-# Fit a periodic function to recruitment
-
-# Fit a logistic to F
