@@ -286,6 +286,8 @@ fmodel <- ~ age + I(age^2) + factor(year)
 # EXERCISE 3
 # fit different smoothers and different degrees of freedom (see ?s)
 # - does it crash when you have higher K that your data can support?
+fmodel <- ~ s(age, k = 8) + s(year, k = 5)
+fit1 <- sca(hke, hke.idx, fmodel, qmodel)
 
 
 #######################
